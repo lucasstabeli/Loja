@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ribeiro Móveis e Colchões</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <!-- PRIMEIRA LOGO: Logo da barra de navegação (header) -->
+            <!-- COLOQUE SUA FOTO EM: imagens/logo-header.png -->
+            <!-- Para ajustar o tamanho, edite o CSS: .logo-header-img { height: 60px; } -->
+            <a href="#inicio" class="logo">
+                <img src="imagens/logo-header.png" alt="Ribeiro" class="logo-header-img">
+            </a>
+            
+            <nav class="nav">
+                <a href="#inicio">Início</a>
+                <a href="#produtos">Produtos</a>
+                <a href="#sobre">Sobre</a>
+                <a href="#contato">Contato</a>
+            </nav>
+            
+            <button class="menu-mobile" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section id="inicio" class="hero">
+        <div class="hero-content">
+            <!-- SEGUNDA LOGO: Logo do meio (hero) -->
+            <!-- COLOQUE SUA FOTO EM: imagens/logo-ribeiro.png -->
+            <!-- Para ajustar a distância até o botão, edite o CSS nas linhas marcadas com AJUSTE AQUI -->
+            <div class="hero-logo-wrap">
+                <img src="imagens/logo-ribeiro.png" alt="Ribeiro Móveis e Colchões">
+            </div>
+            <div class="gold-line"></div>
+            <p>Móveis de alto padrão para seu lar</p>
+            <a href="#produtos" class="btn-primary">Ver Produtos</a>
+        </div>
+    </section>
+
+    <!-- Produtos -->
+    <section id="produtos" class="produtos">
+        <div class="container">
+            <div class="section-header">
+                <h2>Nossos Produtos</h2>
+                <div class="gold-divider">
+                    <div class="line"></div>
+                    <span>✦</span>
+                    <div class="line"></div>
+                </div>
+            </div>
+            
+            <div class="filtros">
+                <button class="filtro-btn active" onclick="filtrarProdutos('todos')">
+                    <i class="fas fa-th-large"></i> Todos
+                </button>
+                <button class="filtro-btn premium-btn" onclick="filtrarProdutos('premium')">
+                    <i class="fas fa-crown"></i> Premium
+                </button>
+                <button class="filtro-btn" onclick="filtrarProdutos('sofas')">
+                    <i class="fas fa-couch"></i> Sofás
+                </button>
+                <button class="filtro-btn" onclick="filtrarProdutos('camas')">
+                    <i class="fas fa-bed"></i> Camas
+                </button>
+                <button class="filtro-btn" onclick="filtrarProdutos('mesas')">
+                    <i class="fas fa-table"></i> Mesas
+                </button>
+                <button class="filtro-btn" onclick="filtrarProdutos('armarios')">
+                    <i class="fas fa-door-closed"></i> Armários
+                </button>
+                <button class="filtro-btn" onclick="filtrarProdutos('colchoes')">
+                    <i class="fas fa-mattress-pillow"></i> Colchões
+                </button>
+            </div>
+
+            <div class="produtos-grid" id="produtosGrid"></div>
+        </div>
+    </section>
+
+    <!-- Sobre -->
+    <section id="sobre" class="sobre">
+        <div class="container">
+            <div class="sobre-content">
+                <div class="sobre-text">
+                    <h2>Sobre Nós</h2>
+                    <div class="gold-divider left">
+                        <div class="line"></div>
+                        <span>✦</span>
+                    </div>
+                    <p>Há mais de 20 anos, a <strong>Ribeiro Móveis e Colchões</strong> oferece produtos de qualidade superior para transformar sua casa em um ambiente de conforto e sofisticação.</p>
+                    <p>Nosso compromisso é com a excelência, desde a seleção das matérias-primas até o atendimento personalizado.</p>
+                    
+                    <div class="sobre-stats">
+                        <div class="stat">
+                            <span class="stat-num">20+</span>
+                            <span class="stat-label">Anos de Experiência</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-num">5000+</span>
+                            <span class="stat-label">Clientes Satisfeitos</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-num">100%</span>
+                            <span class="stat-label">Qualidade Garantida</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sobre-image">
+                    <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800" alt="Showroom">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contato -->
+    <section id="contato" class="contato">
+        <div class="container">
+            <div class="section-header">
+                <h2>Entre em Contato</h2>
+                <div class="gold-divider">
+                    <div class="line"></div>
+                    <span>✦</span>
+                    <div class="line"></div>
+                </div>
+            </div>
+            
+            <div class="contato-grid">
+                <div class="contato-info">
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <h3>Endereço</h3>
+                        <p>R. Felicio Jabur Nasser, 540<br>Barro Galo Branco</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <h3>Telefones</h3>
+                        <p>(12) 3905-1136<br>(12) 99165-2100</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h3>Horário</h3>
+                        <p>Seg - Sex: 8:30h às 18h<br>Sáb: 8:30h às 16h</p>
+                    </div>
+                </div>
+                
+                <div class="contato-map">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3675.296041358647!2d-45.1234567!3d-22.1234567!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjLCsDA3JzI0LjQiUyA0NcKwMDcnMjQuNCJX!5e0!3m2!1spt-BR!2sbr!4v1234567890" 
+                            width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="imagens/logo-ribeiro.png" alt="Ribeiro">
+                </div>
+                
+                <div class="footer-divider">
+                    <div class="line"></div>
+                    <span>✦</span>
+                    <div class="line"></div>
+                </div>
+                
+                <!-- SÓ WHATSAPP -->
+                <div class="footer-social">
+                    <a href="https://wa.me/5512991652100" class="social-btn whatsapp" target="_blank">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Ribeiro Móveis e Colchões. Todos os direitos reservados.</p>
+            </div>
+        </div>
+        
+        <!-- LINK ADM SUTIL - Canto inferior esquerdo -->
+        <a href="admin.html" class="admin-link-sutil">adm</a>
+    </footer>
+
+    <!-- Modal -->
+    <div id="produtoModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            <div class="modal-body">
+                <div class="modal-gallery">
+                    <div class="gallery-main">
+                        <img id="modalMainImage" src="" alt="">
+                        <button class="gallery-nav prev" onclick="changeImage(-1)"><i class="fas fa-chevron-left"></i></button>
+                        <button class="gallery-nav next" onclick="changeImage(1)"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <div class="gallery-thumbs" id="galleryThumbs"></div>
+                </div>
+                <div class="modal-info">
+                    <h2 id="modalTitle"></h2>
+                    <div class="gold-line-small"></div>
+                    <p class="modal-price" id="modalPrice"></p>
+                    <div class="modal-section">
+                        <h4><i class="fas fa-palette"></i> Cores Disponíveis</h4>
+                        <div class="color-options" id="colorOptions"></div>
+                    </div>
+                    <div class="modal-section">
+                        <h4><i class="fas fa-info-circle"></i> Descrição</h4>
+                        <p id="modalDescription"></p>
+                    </div>
+                    <div class="modal-section">
+                        <h4><i class="fas fa-ruler-combined"></i> Dimensões</h4>
+                        <p id="modalDimensions"></p>
+                    </div>
+                    <button class="btn-whatsapp" onclick="enviarWhatsApp()">
+                        <i class="fab fa-whatsapp"></i> Quero este Produto
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WhatsApp Float -->
+    <a href="https://wa.me/5512991652100" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,728 @@
+# Admin HTML com upload de imagens e opção Premium
+admin_html = '''<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Ribeiro Móveis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --vinho: #5D1A1A;
+            --vinho-escuro: #3D0F0F;
+            --dourado: #D4AF37;
+            --dourado-claro: #FFD700;
+            --branco: #FFFFFF;
+            --creme: #FAF8F5;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Lato', sans-serif;
+            background: var(--creme);
+            color: #333;
+        }
+        
+        /* Login */
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            border: 3px solid var(--dourado);
+            text-align: center;
+        }
+        
+        .login-container h2 {
+            color: var(--vinho);
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 20px;
+        }
+        
+        .login-container input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .login-container button {
+            width: 100%;
+            padding: 15px;
+            background: var(--vinho);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        
+        .erro-msg {
+            color: #dc3545;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        /* Painel Admin */
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: none;
+        }
+        
+        .admin-header {
+            background: linear-gradient(135deg, var(--vinho) 0%, var(--vinho-escuro) 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .admin-header h1 {
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 10px;
+        }
+        
+        .logout-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+        
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .admin-grid { grid-template-columns: 1fr; }
+        }
+        
+        /* Formulário */
+        .form-panel {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border: 2px solid var(--dourado);
+        }
+        
+        .form-panel h2 {
+            color: var(--vinho);
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--dourado);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--vinho);
+            font-weight: bold;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--dourado);
+            outline: none;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        @media (max-width: 500px) {
+            .form-row { grid-template-columns: 1fr; }
+        }
+        
+        /* Área de Upload */
+        .upload-area {
+            border: 3px dashed #ddd;
+            border-radius: 10px;
+            padding: 40px 20px;
+            text-align: center;
+            background: #fafafa;
+            transition: all 0.3s;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        
+        .upload-area:hover,
+        .upload-area.dragover {
+            border-color: var(--dourado);
+            background: #fff9e6;
+        }
+        
+        .upload-area i {
+            font-size: 3rem;
+            color: var(--dourado);
+            margin-bottom: 10px;
+        }
+        
+        .upload-area p {
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .upload-area small {
+            color: #999;
+        }
+        
+        .preview-image {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        /* Checkbox Premium */
+        .checkbox-premium {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            background: linear-gradient(135deg, #fff9e6, #fff3cd);
+            border: 2px solid var(--dourado);
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .checkbox-premium input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--dourado);
+        }
+        
+        .checkbox-premium label {
+            margin: 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .checkbox-premium i {
+            color: var(--dourado);
+        }
+        
+        .btn-salvar {
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .btn-cancelar {
+            background: #ccc;
+            color: #333;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        /* Lista de Produtos */
+        .lista-panel {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .lista-panel h2 {
+            color: var(--vinho);
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 20px;
+        }
+        
+        .produto-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+        
+        .produto-item:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-color: var(--dourado);
+        }
+        
+        .produto-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-right: 15px;
+        }
+        
+        .produto-info {
+            flex: 1;
+        }
+        
+        .produto-info h3 {
+            color: var(--vinho);
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+        
+        .produto-info .categoria {
+            display: inline-block;
+            background: var(--dourado);
+            color: var(--vinho);
+            padding: 3px 10px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+        }
+        
+        .produto-info .premium-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: var(--vinho-escuro);
+            padding: 3px 10px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .produto-info .preco {
+            color: #25D366;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-top: 5px;
+        }
+        
+        .produto-acoes {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-acao {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .btn-editar {
+            background: var(--dourado);
+            color: var(--vinho);
+        }
+        
+        .btn-excluir {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <!-- TELA DE LOGIN -->
+    <div id="telaLogin" class="login-container">
+        <h2>🔐 Área Administrativa</h2>
+        <p style="margin-bottom: 20px; color: #666;">Digite a senha para gerenciar produtos</p>
+        <input type="password" id="senhaInput" placeholder="Digite a senha...">
+        <button onclick="fazerLogin()">Entrar</button>
+        <p id="erroLogin" class="erro-msg">Senha incorreta!</p>
+    </div>
+
+    <!-- PAINEL ADMIN -->
+    <div id="painelAdmin" class="admin-container">
+        <button class="logout-btn" onclick="fazerLogout()">
+            <i class="fas fa-sign-out-alt"></i> Sair
+        </button>
+        
+        <div class="admin-header">
+            <h1>👑 Gerenciamento de Produtos</h1>
+            <p>Adicione, edite ou remova produtos do site</p>
+        </div>
+        
+        <div class="admin-grid">
+            <!-- FORMULÁRIO -->
+            <div class="form-panel">
+                <h2 id="tituloForm">➕ Novo Produto</h2>
+                
+                <form id="formProduto" onsubmit="salvarProduto(event)">
+                    <input type="hidden" id="produtoId">
+                    
+                    <!-- UPLOAD DE IMAGEM -->
+                    <div class="form-group">
+                        <label>📷 Foto do Produto</label>
+                        <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Arraste a foto aqui ou clique para selecionar</p>
+                            <small>Formatos: JPG, PNG, GIF</small>
+                            <img id="previewImage" class="preview-image">
+                        </div>
+                        <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
+                        <input type="hidden" id="imagemBase64">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>🏷️ Nome do Produto</label>
+                        <input type="text" id="nomeProduto" placeholder="Ex: Sofá Imperial" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>💰 Preço (R$)</label>
+                            <input type="number" id="precoProduto" step="0.01" placeholder="2990.00" required>
+                        </div>
+                        <div class="form-group">
+                            <label>📂 Categoria</label>
+                            <select id="categoriaProduto" required>
+                                <option value="">Escolha...</option>
+                                <option value="sofas">🛋️ Sofás</option>
+                                <option value="camas">🛏️ Camas</option>
+                                <option value="mesas">🪑 Mesas</option>
+                                <option value="armarios">🚪 Armários</option>
+                                <option value="colchoes">🛏️ Colchões</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- CHECKBOX PREMIUM -->
+                    <div class="form-group">
+                        <div class="checkbox-premium">
+                            <input type="checkbox" id="premiumProduto">
+                            <label for="premiumProduto">
+                                <i class="fas fa-crown"></i>
+                                <span>Produto Premium (aparece na aba Premium)</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>🎨 Cores Disponíveis</label>
+                        <input type="text" id="coresProduto" placeholder="Marrom, Bege, Cinza" required>
+                        <small style="color: #666; font-size: 0.85rem;">Separe as cores por vírgula</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>📐 Dimensões</label>
+                        <input type="text" id="dimensoesProduto" placeholder="Ex: 2,00m x 0,90m x 0,85m" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>📝 Descrição</label>
+                        <textarea id="descricaoProduto" rows="4" placeholder="Descreva o produto..." required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn-salvar">
+                        <i class="fas fa-save"></i> Salvar Produto
+                    </button>
+                    
+                    <button type="button" class="btn-cancelar" id="btnCancelar" onclick="cancelarEdicao()">
+                        Cancelar Edição
+                    </button>
+                </form>
+            </div>
+            
+            <!-- LISTA DE PRODUTOS -->
+            <div class="lista-panel">
+                <h2>📦 Meus Produtos</h2>
+                <div id="listaProdutos">
+                    <!-- Produtos aparecem aqui -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURAÇÃO - ALTERE A SENHA AQUI
+        const SENHA_ADMIN = 'ribeiro2024';
+        
+        // Dados dos produtos
+        let produtos = JSON.parse(localStorage.getItem('produtos')) || [];
+        
+        // Verificar se já está logado
+        if (localStorage.getItem('logado') === 'true') {
+            mostrarPainel();
+        }
+        
+        // DRAG AND DROP
+        const uploadArea = document.getElementById('uploadArea');
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                processarImagem(files[0]);
+            }
+        });
+        
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                processarImagem(file);
+            }
+        }
+        
+        function processarImagem(file) {
+            if (!file.type.startsWith('image/')) {
+                alert('Por favor, selecione apenas arquivos de imagem!');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64 = e.target.result;
+                document.getElementById('imagemBase64').value = base64;
+                document.getElementById('previewImage').src = base64;
+                document.getElementById('previewImage').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function fazerLogin() {
+            const senha = document.getElementById('senhaInput').value;
+            if (senha === SENHA_ADMIN) {
+                localStorage.setItem('logado', 'true');
+                mostrarPainel();
+            } else {
+                document.getElementById('erroLogin').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('erroLogin').style.display = 'none';
+                }, 3000);
+            }
+        }
+        
+        function fazerLogout() {
+            localStorage.removeItem('logado');
+            location.reload();
+        }
+        
+        function mostrarPainel() {
+            document.getElementById('telaLogin').style.display = 'none';
+            document.getElementById('painelAdmin').style.display = 'block';
+            atualizarLista();
+        }
+        
+        function salvarProduto(event) {
+            event.preventDefault();
+            
+            const imagemBase64 = document.getElementById('imagemBase64').value;
+            if (!imagemBase64 && !document.getElementById('produtoId').value) {
+                alert('Por favor, adicione uma foto do produto!');
+                return;
+            }
+            
+            const id = document.getElementById('produtoId').value;
+            
+            // Se estiver editando e não trocou a imagem, mantém a antiga
+            let imagens = [imagemBase64];
+            if (id && !imagemBase64) {
+                const produtoAntigo = produtos.find(p => p.id === parseInt(id));
+                if (produtoAntigo) {
+                    imagens = produtoAntigo.imagens;
+                }
+            }
+            
+            const produto = {
+                id: id ? parseInt(id) : Date.now(),
+                nome: document.getElementById('nomeProduto').value,
+                preco: parseFloat(document.getElementById('precoProduto').value),
+                categoria: document.getElementById('categoriaProduto').value,
+                premium: document.getElementById('premiumProduto').checked,
+                imagens: imagens,
+                cores: document.getElementById('coresProduto').value.split(',').map(c => c.trim()),
+                dimensoes: document.getElementById('dimensoesProduto').value,
+                descricao: document.getElementById('descricaoProduto').value
+            };
+            
+            if (id) {
+                const index = produtos.findIndex(p => p.id === parseInt(id));
+                produtos[index] = produto;
+            } else {
+                produtos.push(produto);
+            }
+            
+            localStorage.setItem('produtos', JSON.stringify(produtos));
+            
+            limparFormulario();
+            atualizarLista();
+            
+            alert('✅ Produto salvo com sucesso!');
+        }
+        
+        function atualizarLista() {
+            const container = document.getElementById('listaProdutos');
+            
+            if (produtos.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-box-open" style="font-size: 3rem; margin-bottom: 15px; color: var(--dourado);"></i>
+                        <p>Nenhum produto cadastrado ainda.</p>
+                        <p>Preencha o formulário ao lado para adicionar!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = produtos.map(produto => `
+                <div class="produto-item">
+                    <img src="${produto.imagens[0]}" class="produto-img" alt="${produto.nome}">
+                    <div class="produto-info">
+                        <div>
+                            <span class="categoria">${getIconeCategoria(produto.categoria)} ${getNomeCategoria(produto.categoria)}</span>
+                            ${produto.premium ? '<span class="premium-badge"><i class="fas fa-crown"></i> Premium</span>' : ''}
+                        </div>
+                        <h3>${produto.nome}</h3>
+                        <div class="preco">R$ ${produto.preco.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div>
+                    </div>
+                    <div class="produto-acoes">
+                        <button class="btn-acao btn-editar" onclick="editarProduto(${produto.id})" title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn-acao btn-excluir" onclick="excluirProduto(${produto.id})" title="Excluir">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function editarProduto(id) {
+            const produto = produtos.find(p => p.id === id);
+            if (!produto) return;
+            
+            document.getElementById('produtoId').value = produto.id;
+            document.getElementById('nomeProduto').value = produto.nome;
+            document.getElementById('precoProduto').value = produto.preco;
+            document.getElementById('categoriaProduto').value = produto.categoria;
+            document.getElementById('premiumProduto').checked = produto.premium || false;
+            document.getElementById('coresProduto').value = produto.cores.join(', ');
+            document.getElementById('dimensoesProduto').value = produto.dimensoes;
+            document.getElementById('descricaoProduto').value = produto.descricao;
+            
+            // Mostrar preview da imagem
+            if (produto.imagens && produto.imagens[0]) {
+                document.getElementById('previewImage').src = produto.imagens[0];
+                document.getElementById('previewImage').style.display = 'block';
+                document.getElementById('imagemBase64').value = produto.imagens[0];
+            }
+            
+            document.getElementById('tituloForm').innerHTML = '✏️ Editar Produto';
+            document.getElementById('btnCancelar').style.display = 'block';
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function excluirProduto(id) {
+            if (confirm('Tem certeza que deseja excluir este produto?')) {
+                produtos = produtos.filter(p => p.id !== id);
+                localStorage.setItem('produtos', JSON.stringify(produtos));
+                atualizarLista();
+            }
+        }
+        
+        function cancelarEdicao() {
+            limparFormulario();
+        }
+        
+        function limparFormulario() {
+            document.getElementById('formProduto').reset();
+            document.getElementById('produtoId').value = '';
+            document.getElementById('previewImage').style.display = 'none';
+            document.getElementById('imagemBase64').value = '';
+            document.getElementById('tituloForm').innerHTML = '➕ Novo Produto';
+            document.getElementById('btnCancelar').style.display = 'none';
+        }
+        
+        function getNomeCategoria(cat) {
+            const nomes = {
+                'sofas': 'Sofá',
+                'camas': 'Cama',
+                'mesas': 'Mesa',
+                'armarios': 'Armário',
+                'colchoes': 'Colchão'
+            };
+            return nomes[cat] || cat;
+        }
+        
+        function getIconeCategoria(cat) {
+            const icones = {
+                'sofas': '🛋️',
+                'camas': '🛏️',
+                'mesas': '🪑',
+                'armarios': '🚪',
+                'colchoes': '🛏️'
+            };
+            return icones[cat] || '📦';
+        }
+        
+        // Permitir Enter no login
+        document.getElementById('senhaInput')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') fazerLogin();
+        });
+    </script>
+</body>
+</html>'''
+
